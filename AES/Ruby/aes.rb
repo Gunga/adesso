@@ -79,30 +79,38 @@ class AESCipher
   def key_expansion
     word = []
     for i in 0...@nk
-      word << [@cipher_key[4*i], @cipher_key[4*i+1], @cipher_key[4*i+2], @cipher_key[4*i+3]]
+      word << [@cipher_key[4*i], @cipher_key[4*i+1], @cipher_key[4*i+2], @cipher_key[4*i+3]].join
     end
 
     limit = @nb * (@nr + 1)
     for i in @nk...limit
-      temp = word[i-1]
+      temp = word[i-1].clone
       if (i % @nk == 0)
-        temp = sub_word(rot_word(temp)) ^ @rcon[i/@nk]
+        temp = (sub_word(rot_word(temp)).hex ^ @rcon[i/@nk].hex).to_s(16)
       elsif (@nk > 6 && i % @nk == 4)
         temp = sub_word(temp)
       end
-      word[i] = word[i-@nk] ^ temp
+      word[i] = (word[i-@nk].hex ^ temp.hex).to_s(16)
     end
-  end
-
-  def add_round_key(key_schedule, round)
+    word
   end
 
   def sub_word(temp)
+    (temp.length/2).times do
+      byte = temp.slice!(0,2)
+      temp << @sbox[byte.hex].to_s(16).rjust(2, '0')
+    end
+    temp
   end
   
   def rot_word(temp)
+    first = temp.slice!(0,2)
+    temp << first
   end
   
+  def add_round_key(key_schedule, round)
+  end
+
   def mix_columns
   end
 
