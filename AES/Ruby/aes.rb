@@ -116,13 +116,18 @@ class AESCipher
     end
   end
 
-  def mix_columns
+  def sub_bytes
+    for r in 0...4
+      for c in 0...@nb
+        @state[r][c] = @sbox[@state[r][c].hex].to_s(16).rjust(2, '0')
+      end
+    end
   end
 
   def shift_rows
   end
 
-  def sub_bytes
+  def mix_columns
   end
 end
 
