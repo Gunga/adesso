@@ -109,6 +109,11 @@ class AESCipher
   end
   
   def add_round_key(key_schedule, round)
+    for r in 0...4
+      for c in 0...@nb
+        @state[r][c] = (@state[r][c].hex ^ key_schedule[round*4+c][r*2, 2].hex).to_s(16).rjust(2, '0')
+      end
+    end
   end
 
   def mix_columns
