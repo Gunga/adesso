@@ -129,6 +129,22 @@ class AESCipher
   end
 
   def mix_columns
+    for c in 0...4
+      a = []
+      b = []
+      for i in 0...4
+        a[i] = @state[i][c].hex
+        h = @state[i][c].hex >> 7
+        b[i] = @state[i][c].hex << 1
+        b[i] ^= 0x1b if h > 0
+        b[i] %= 256
+      end
+
+      @state[0][c] = (b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3]).to_s(16).rjust(2, '0')
+      @state[1][c] = (a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3]).to_s(16).rjust(2, '0')
+      @state[2][c] = (a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3]).to_s(16).rjust(2, '0')
+      @state[3][c] = (a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3]).to_s(16).rjust(2, '0')
+    end
   end
 end
 
