@@ -125,6 +125,7 @@ class AESCipher
   end
 
   def shift_rows
+    4.times{ |i| @state[i].rotate!(i) }
   end
 
   def mix_columns
