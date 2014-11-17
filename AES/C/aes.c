@@ -15,6 +15,7 @@ void cipher(char **input);
 void printArrayOfStrings(char arr[][3]);
 void split(char input[], char tokenized[][3]);
 void hexafy(char input[][3], uint16_t hexadecimal[]);
+void keyExpansion();
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -79,16 +80,17 @@ void printArrayOfStrings(char arr[][3]){
 
 void cipher(char **input){
     *input = "Test";
+    keyExpansion();
 }
 
 void split(char input[], char tokenized[][3]){
     char *token, string[strlen(input)];
     int i=0;
-    
+
     strcpy(string, input);
-    
+
     token = strtok( string, " " );
-    
+
     while ( token != NULL ) {
         strcpy(tokenized[i], token);
         token = strtok( NULL, " " );
@@ -110,5 +112,24 @@ void hexafy(char input[][3], uint16_t hexadecimal[]){
     }
 }
 
+void keyExpansion(){
+    char cipherKey[16][3] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    int i, j, limit = (nb*(nr+1));
+    uint16_t expanded_key[nk*limit], temp[4];
+
+    split(key, cipherKey);
+    hexafy(cipherKey, expanded_key);
+
+    for (i = nk; i < limit; i++) {
+        for (j = 0; j < 4; j++)
+            temp[j] = expanded_key[j+i*nk-4];
     
+        if (i % nk*nk == 0) {
+            //temp = SubWord(RotWord(temp)) xor Rcon[i/Nk]
+        }
+
+        for (j = 0; j < 4; j++)
+            expanded_key[i*nk+j]= expanded_key[(i-nk)*nk] ^ temp[j];
+
+    }
 }
