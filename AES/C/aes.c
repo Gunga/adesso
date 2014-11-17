@@ -8,9 +8,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 void cipher(char **input);
-void split(char input[], char *tokenized[16]);
+void printArrayOfStrings(char arr[][3]);
+void split(char input[], char tokenized[][3]);
+void hexafy(char input[][3], uint16_t hexadecimal[]);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -51,27 +55,33 @@ const int sbox[] = {
 int main(){
     
     char *input = "32 43 f6 a8 88 5a 30 8d 31 31 98 a2 e0 37 07 34";
-    char *tokenizedInput[16];
-    int i;
-    
+    char tokenizedInput[16][3] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    uint16_t hexadecimal[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
     printf("Input: %s\n", input);
     printf("Key:   %s\n", key);
     split(input, tokenizedInput);
     printf("Each byte:\n");
-    for ( i = 0; i < 16; i++ ) {
-        printf( "%7d%13s\n", i, tokenizedInput[i] );
-    }
+    hexafy(tokenizedInput, hexadecimal);
+    printArrayOfStrings(tokenizedInput);
+
     cipher(&input);
     printf("Input: %s\n", input);
     
     return 0;
 }
 
+void printArrayOfStrings(char arr[][3]){
+    for (int i = 0; i < 16; i++) {
+        printf( "%7d%13s\n", i, arr[i] );
+    }
+}
+
 void cipher(char **input){
     *input = "Test";
 }
 
-void split(char input[], char *tokenized[16]){
+void split(char input[], char tokenized[][3]){
     char *token, string[strlen(input)];
     int i=0;
     
@@ -80,9 +90,25 @@ void split(char input[], char *tokenized[16]){
     token = strtok( string, " " );
     
     while ( token != NULL ) {
-        tokenized[i] = token;
+        strcpy(tokenized[i], token);
         token = strtok( NULL, " " );
         i++;
     }
+}
+
+void hexafy(char input[][3], uint16_t hexadecimal[]){
+    int i=0;
+    char *str;
+    char dest[] = {'0', 'x', 0, 0, 0};
+
+    for (i = 0; i< 16; i++) {
+//        printf("%7s-", input[i]);
+        dest[2] = input[i][0];
+        dest[3] = input[i][1];
+        hexadecimal[i] = (uint16_t) strtoul(dest, &str, 16);
+//        printf("%02x\n", hexadecimal[i]);
+    }
+}
+
     
 }
