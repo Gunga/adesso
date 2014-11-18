@@ -122,7 +122,7 @@ void keyExpansion(){
         }
 
         for (j = 0; j < 4; j++)
-            expanded_key[i*nk+j]= expanded_key[(i-nk)*nk] ^ temp[j];
+            expanded_key[i*nk+j]= expanded_key[(i-nk)*nk+j] ^ temp[j];
 
     }
 }
