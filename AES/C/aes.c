@@ -15,7 +15,7 @@ void cipher(char **input);
 void printArrayOfStrings(char arr[][3]);
 void split(char input[], char tokenized[][3]);
 void hexafy(char input[][3], uint16_t hexadecimal[]);
-void keyExpansion();
+void keyExpansion(uint16_t expanded_key[]);
 void rotWord(uint16_t word[4]);
 void subWord(uint16_t word[4]);
 
@@ -69,8 +69,10 @@ void printArrayOfStrings(char arr[][3]){
 }
 
 void cipher(char **input){
+    uint16_t expanded_key[nk*(nb*(nr+1))];
+
     *input = "Test";
-    keyExpansion();
+    keyExpansion(expanded_key);
 }
 
 void split(char input[], char tokenized[][3]){
@@ -102,10 +104,10 @@ void hexafy(char input[][3], uint16_t hexadecimal[]){
     }
 }
 
-void keyExpansion(){
+void keyExpansion(uint16_t expanded_key[]){
     char cipherKey[16][3] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     int i, j, limit = (nb*(nr+1));
-    uint16_t expanded_key[nk*limit], temp[4];
+    uint16_t temp[4];
 
     split(key, cipherKey);
     hexafy(cipherKey, expanded_key);
