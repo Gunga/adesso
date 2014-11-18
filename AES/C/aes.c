@@ -16,6 +16,7 @@ void printArrayOfStrings(char arr[][3]);
 void split(char input[], char tokenized[][3]);
 void hexafy(char input[][3], uint16_t hexadecimal[]);
 void keyExpansion();
+void rotWord(uint16_t word[4]);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -132,4 +133,14 @@ void keyExpansion(){
             expanded_key[i*nk+j]= expanded_key[(i-nk)*nk] ^ temp[j];
 
     }
+}
+
+void rotWord(uint16_t word[4]){
+    uint16_t first = word[0];
+
+    for(int i = 0; i < 3; i++)
+        word[i] = word[i+1];
+
+    word[3] = first;
+
 }
