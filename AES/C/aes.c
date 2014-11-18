@@ -17,6 +17,7 @@ void split(char input[], char tokenized[][3]);
 void hexafy(char input[][3], uint16_t hexadecimal[]);
 void keyExpansion();
 void rotWord(uint16_t word[4]);
+void subWord(uint16_t word[4]);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -127,6 +128,8 @@ void keyExpansion(){
     
         if (i % nk*nk == 0) {
             //temp = SubWord(RotWord(temp)) xor Rcon[i/Nk]
+            rotWord(temp);
+            subWord(temp);
         }
 
         for (j = 0; j < 4; j++)
@@ -143,4 +146,9 @@ void rotWord(uint16_t word[4]){
 
     word[3] = first;
 
+}
+
+void subWord(uint16_t word[4]){
+    for(int i = 0; i < 4; i++)
+        word[i] = sbox[word[i]];
 }
