@@ -18,6 +18,7 @@ void hexafy(char input[][3], uint16_t hexadecimal[]);
 void keyExpansion(uint16_t expanded_key[]);
 void rotWord(uint16_t word[4]);
 void subWord(uint16_t word[4]);
+void addRoundKey(uint16_t expanded_key[], int round);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
