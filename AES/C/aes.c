@@ -73,6 +73,8 @@ void cipher(char **input){
 
     *input = "Test";
     keyExpansion(expanded_key);
+
+    addRoundKey(expanded_key, 0);
 }
 
 void split(char input[], char tokenized[][3]){
@@ -142,4 +144,7 @@ void rotWord(uint16_t word[4]){
 void subWord(uint16_t word[4]){
     for(int i = 0; i < 4; i++)
         word[i] = sbox[word[i]];
+}
+
+void addRoundKey(uint16_t expanded_key[], int round){
 }
