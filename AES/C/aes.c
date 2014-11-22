@@ -11,14 +11,14 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-void cipher(char **input);
+void cipher(char state[]);
 void printArrayOfStrings(char arr[][3]);
 void split(char input[], char tokenized[][3]);
 void hexafy(char input[][3], uint16_t hexadecimal[]);
 void keyExpansion(uint16_t expanded_key[]);
 void rotWord(uint16_t word[4]);
 void subWord(uint16_t word[4]);
-void addRoundKey(uint16_t expanded_key[], int round);
+void addRoundKey(uint16_t state[], uint16_t expanded_key[], int round);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -57,9 +57,9 @@ int main(){
     hexafy(tokenizedInput, hexadecimal);
     printArrayOfStrings(tokenizedInput);
 
-    cipher(&input);
+    cipher(hexadecimal);
     printf("Input: %s\n", input);
-    
+
     return 0;
 }
 
@@ -69,13 +69,12 @@ void printArrayOfStrings(char arr[][3]){
     }
 }
 
-void cipher(char **input){
+void cipher(uint16_t state[]){
     uint16_t expanded_key[nk*(nb*(nr+1))];
 
-    *input = "Test";
     keyExpansion(expanded_key);
 
-    addRoundKey(expanded_key, 0);
+    addRoundKey(state, expanded_key, 0);
 }
 
 void split(char input[], char tokenized[][3]){
@@ -147,5 +146,10 @@ void subWord(uint16_t word[4]){
         word[i] = sbox[word[i]];
 }
 
-void addRoundKey(uint16_t expanded_key[], int round){
+void addRoundKey(uint16_t state[], uint16_t expanded_key[], int round){
+    int i = -1;
+
+    while( i++ < 16){
+        state[i] = state[i] ^ expanded_key[round*16 + i];
+    }
 }
