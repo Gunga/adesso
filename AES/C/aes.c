@@ -20,6 +20,7 @@ void rotWord(uint16_t word[4]);
 void subWord(uint16_t word[4]);
 void addRoundKey(uint16_t state[], uint16_t expanded_key[], int round);
 void subBytes(uint16_t state[]);
+void shiftRows(uint16_t state[]);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -159,4 +160,17 @@ void subBytes(uint16_t state[]){
 
     while( i++ < 16)
         state[i] = sbox[state[i]];
+}
+
+void shiftRows(uint16_t state[]){
+    int r, c;
+    uint16_t temp[4*nb];
+
+    for (r = 1; r < 4; r++)
+        for (c = 0; c < nb; c++)
+            temp[r+4*c] = state[r + 4*((c+r)%nb)];
+
+    for (r = 1; r < 4; r++)
+        for(c = 0; c < nb; c++ )
+            state[r+4*c] = temp[r+4*c];
 }
