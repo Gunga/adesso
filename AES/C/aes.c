@@ -21,6 +21,7 @@ void subWord(uint16_t word[4]);
 void addRoundKey(uint16_t state[], uint16_t expanded_key[], int round);
 void subBytes(uint16_t state[]);
 void shiftRows(uint16_t state[]);
+void mixColumns(uint16_t state[]);
 
 char *key = "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c";
 int nb = 4, nk = 4, nr = 10;
@@ -173,4 +174,24 @@ void shiftRows(uint16_t state[]){
     for (r = 1; r < 4; r++)
         for(c = 0; c < nb; c++ )
             state[r+4*c] = temp[r+4*c];
+}
+
+void mixColumns(uint16_t state[]){
+    int c, i;
+    uint16_t h, a[4], b[4];
+
+    for (c = 0; c < 4; c++){
+        for (i = 0; i < 4; i++){
+            a[i] = state[i+4*c];
+            h = state[i+4*c] >> 7;
+            b[i] = state[i+4*c] << 1;
+            if( h > 0 ) b[i] ^= 0x1b;
+            b[i] %= 256;
+        }
+
+        state[0+4*c] = b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3];
+        state[1+4*c] = a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3];
+        state[2+4*c] = a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3];
+        state[3+4*c] = a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3];
+    }
 }
