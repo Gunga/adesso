@@ -1,5 +1,5 @@
 var AESCipher = function(input) {
-  this.cipher_key = input.key;
+  this.cipherKey = input.key.split(" ");
   this.nb = input.nb;
   this.nr = input.nr;
   this.nk = input.nk;
@@ -31,19 +31,55 @@ var AESCipher = function(input) {
 AESCipher.prototype = {
 
   encrypt: function(){
+    var keySchedule = this.keyExpansion();
 
+    for (var i = 0; i < keySchedule.length; i++) {
+      console.log(keySchedule[i].toString(16),
+        keySchedule[++i].toString(16),
+        keySchedule[++i].toString(16),
+        keySchedule[++i].toString(16),
+        keySchedule[++i].toString(16),
+        keySchedule[++i].toString(16),
+        keySchedule[++i].toString(16),
+        keySchedule[++i].toString(16)
+        );
+    };
   },
 
-  keyExpension: function(){
+  keyExpansion: function(){
+    var expandedKey = this.cipherKey.slice(0);
+    var temp = [];
+    var limit = (this.nb*(this.nr+1));
 
+    for (var i = 0; i < expandedKey.length; i++) {
+      expandedKey[i] = parseInt(expandedKey[i], 16)
+    };
+
+    for (var i = this.nk; i < limit; i++) {
+        for (var j = 0; j < 4; j++)
+            temp[j] = expandedKey[j+i*this.nk-4];
+
+        if (i % this.nk*this.nk == 0)
+            temp[0] = this.subWord(this.rotWord(temp))[0] ^ this.rcon[i/this.nk];
+
+        for (j = 0; j < 4; j++)
+            expandedKey[i*this.nk+j] = expandedKey[(i-this.nk)*this.nk+j] ^ temp[j];
+
+    }
+
+    return expandedKey;
   },
 
-  subWord: function(){
-
+  subWord: function(temp){
+    for(var i = 0; i < 4; i++)
+        temp[i] = this.sbox[temp[i]];
+    return temp;
   },
 
-  rotWord: function(){
-
+  rotWord: function(temp){
+    first = temp.splice(0,1)[0];
+    temp.push(first);
+    return temp;
   },
 
   addRoundKey: function(){
@@ -63,5 +99,5 @@ AESCipher.prototype = {
   }
 }
 
-cipher = new AESCipher({cipher_key: "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c", nk: 4, nr: 10, nb: 4});
+cipher = new AESCipher({key: "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c", nk: 4, nr: 10, nb: 4});
 cipher.encrypt();
