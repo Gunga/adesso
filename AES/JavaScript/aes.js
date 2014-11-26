@@ -94,7 +94,8 @@ AESCipher.prototype = {
   },
 
   subBytes: function(){
-
+    for (var i = 0; i < this.state.length; i++)
+      this.state[i] = this.sbox[this.state[i]];
   },
 
   shiftRows: function(){
