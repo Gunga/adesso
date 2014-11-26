@@ -40,17 +40,24 @@ AESCipher.prototype = {
 
     this.addRoundKey(keySchedule, 0);
 
-    for (var i = 0; i < this.state.length; i++) {
-      console.log(this.state[i].toString(16),
-        this.state[++i].toString(16),
-        this.state[++i].toString(16),
-        this.state[++i].toString(16),
-        this.state[++i].toString(16),
-        this.state[++i].toString(16),
-        this.state[++i].toString(16),
-        this.state[++i].toString(16)
-        );
+    for (var round = 1; round < this.nr; round++) {
+      this.subBytes();
+      this.shiftRows();
+      this.mixColumns();
+      this.addRoundKey(keySchedule, round);
     };
+
+    this.subBytes();
+    this.shiftRows();
+    this.addRoundKey(keySchedule, round);
+
+    var output = [];
+
+    for (var i = 0; i < this.state.length; i++)
+      output[i] = this.state[i].toString(16);
+
+    return output.join(" ");
+
   },
 
   keyExpansion: function(){
@@ -132,4 +139,6 @@ AESCipher.prototype = {
 }
 
 cipher = new AESCipher({key: "2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c", nk: 4, nr: 10, nb: 4});
-cipher.encrypt("32 43 f6 a8 88 5a 30 8d 31 31 98 a2 e0 37 07 34");
+console.log("input:  32 43 f6 a8 88 5a 30 8d 31 31 98 a2 e0 37 07 34");
+console.log("key:    2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c");
+console.log("output:", cipher.encrypt("32 43 f6 a8 88 5a 30 8d 31 31 98 a2 e0 37 07 34"));
