@@ -112,7 +112,22 @@ AESCipher.prototype = {
   },
 
   mixColumns: function(){
+    var a = [], b = [];
 
+    for (var c = 0; c < 4; c++){
+      for (var i = 0; i < 4; i++){
+        a[i] = this.state[i+4*c];
+        h = this.state[i+4*c] >> 7;
+        b[i] = this.state[i+4*c] << 1;
+        if( h > 0 ) b[i] ^= 0x1b;
+        b[i] %= 256;
+      }
+
+      this.state[0+4*c] = b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3];
+      this.state[1+4*c] = a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3];
+      this.state[2+4*c] = a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3];
+      this.state[3+4*c] = a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3];
+    }
   }
 }
 
