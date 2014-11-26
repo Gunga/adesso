@@ -99,6 +99,15 @@ AESCipher.prototype = {
   },
 
   shiftRows: function(){
+    var temp = [];
+
+    for (var r = 1; r < 4; r++)
+      for (var c = 0; c < this.nb; c++)
+        temp[r+4*c] = this.state[r + 4*((c+r)%this.nb)];
+
+    for (r = 1; r < 4; r++)
+      for(c = 0; c < this.nb; c++ )
+        this.state[r+4*c] = temp[r+4*c];
 
   },
 
