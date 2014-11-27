@@ -8,3 +8,4 @@ Implementations:
 * [PHP](/AES/PHP)
 * [Ruby](/AES/Ruby)
 * [C](/AES/C)
+* [JavaScript](/AES/JavaScript)
